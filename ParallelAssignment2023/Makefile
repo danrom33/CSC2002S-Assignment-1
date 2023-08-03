@@ -1,0 +1,20 @@
+JAVAC = C:\Program Files\Java\jdk-18.0.1.1\bin\javac
+JAVA = C:\Program Files\Java\jdk-18.0.1.1\bin\java
+.SUFFIXES: .java .class
+SRCDIR = src/MonteCarloMini
+BINDIR = bin/MonteCarloMini
+
+$(BINDIR)/%.class:$(SRCDIR)/%.java
+	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) -sourcepath $(SRCDIR) $<
+
+CLASSES= TerrainArea.class Search.class MonteCarloMinimization.class
+CLASS_FILES = $(CLASSES:%.class=$(BINDIR)/%.class)
+JAVA_FILES = $(CLASSES:%.class=$(SRCDIR)/%.java)
+
+default: $(CLASS_FILES)
+
+clean:
+	rm $(BINDIR)/*.class
+
+run:
+	java -cp bin MonteCarloMinimization
