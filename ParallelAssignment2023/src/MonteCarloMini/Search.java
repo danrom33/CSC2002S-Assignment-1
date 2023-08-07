@@ -7,7 +7,7 @@ package MonteCarloMini;
 
 public class Search {
 	private int id;				// Searcher identifier
-	private int pos_row, pos_col;		// Position in the grid
+	private int pos_row, pos_col;	// Position in the grid
 	private int steps; //number of steps to end of search
 	private boolean stopped;			// Did the search hit a previous trail?
 	
@@ -33,32 +33,32 @@ public class Search {
 		Direction next = Direction.STAY_HERE;
 		while(terrain.visited(pos_row, pos_col)==0) { // stop when hit existing path
 			height=terrain.get_height(pos_row, pos_col);
-			System.out.println("Height: " + height);
+			//System.out.println("Height: " + height);
 			terrain.mark_visited(pos_row, pos_col, id); //mark current position as visited
 			steps++;
 			next = terrain.next_step(pos_row, pos_col);
 			switch(next) {
-				case STAY_HERE: System.out.print("STAY - END OF SEARCH\n\n");return height; //found local valley
+				case STAY_HERE: return height; //found local valley
 				case LEFT: 
-					System.out.println("LEFT");
+					//System.out.println("LEFT");
 					pos_row--;
 					break;
 				case RIGHT:
-					System.out.println("RIGHT");
+					//System.out.println("RIGHT");
 					pos_row=pos_row+1;
 					break;
 				case UP: 
-					System.out.println("UP");
+					//System.out.println("UP");
 					pos_col=pos_col-1;
 					break;
 				case DOWN: 
-					System.out.println("DOWN");
+					//System.out.println("DOWN");
 					pos_col=pos_col+1;
 					break;
 			}
 		}
 		stopped=true;
-		System.out.println("BEEN VISITED - END OF SEARCH\n\n");
+		//System.out.println("BEEN VISITED - END OF SEARCH\n\n");
 		return height;
 	}
 

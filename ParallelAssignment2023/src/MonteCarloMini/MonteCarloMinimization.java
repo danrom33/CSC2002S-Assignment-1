@@ -47,13 +47,13 @@ class MonteCarloMinimization{
     	// ymax = Double.parseDouble(args[5]);
     	// searches_density = Double.parseDouble(args[6]);
 
-        rows = 3;
-    	columns = 3;
-    	xmin = 0;
+        rows = 10000;
+    	columns = 10000;
+    	xmin = -10;
     	xmax = 10;
-    	ymin = 0;
+    	ymin = -10;
     	ymax = 10;
-    	searches_density = 0.5;
+    	searches_density = 0.25;
   
     	if(DEBUG) {
     		/* Print arguments */
@@ -85,7 +85,7 @@ class MonteCarloMinimization{
     	int finder =-1;
     	for  (int i=0;i<num_searches;i++) {
     		local_min=searches[i].find_valleys();
-    		if((!searches[i].isStopped())&&(local_min<min)) { //don't look at  those who stopped because hit exisiting path
+    		if((!searches[i].isStopped())&&(local_min<min)) { //don't look at those who stopped because hit exisiting path
     			min=local_min;
     			finder=i; //keep track of who found it
     		}

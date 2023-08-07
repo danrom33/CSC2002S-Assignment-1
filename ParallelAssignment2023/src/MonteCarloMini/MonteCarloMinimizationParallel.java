@@ -14,7 +14,7 @@ class MonteCarloMinimizationParallel{
 
 	static final ForkJoinPool FJPool = new ForkJoinPool();
 
-	static final boolean DEBUG=true;
+	static final boolean DEBUG=false;
 	
 	static long startTime = 0;
 	static long endTime = 0;
@@ -27,10 +27,6 @@ class MonteCarloMinimizationParallel{
 		endTime=System.currentTimeMillis(); 
 	}
 
-	static Integer[] search(Search[] searchArr){
-		return  (Integer[]) FJPool.invoke(new SearchParallel(searchArr, 0, searchArr.length));
-	}
-	
     public static void main(String[] args)  {
 
     	int rows, columns; //grid size
@@ -55,12 +51,12 @@ class MonteCarloMinimizationParallel{
     	// ymax = Double.parseDouble(args[5]);
     	// searches_density = Double.parseDouble(args[6]);
 
-		rows = 5;
-    	columns = 5;
-    	xmin = -3;
-    	xmax = 3;
-    	ymin = -3;
-    	ymax =3;
+		rows = 10000;
+    	columns = 10000;
+    	xmin = -10;
+    	xmax = 10;
+    	ymin = -10;
+    	ymax =10;
     	searches_density = 0.25;
   
     	if(DEBUG) {
@@ -74,9 +70,16 @@ class MonteCarloMinimizationParallel{
     	// Initialize 
     	terrain = new TerrainArea(rows, columns, xmin,xmax,ymin,ymax);
     	num_searches = (int)( rows * columns * searches_density );
-    	searches= new Search [num_searches];
-    	for (int i=0;i<num_searches;i++) 
-    		searches[i]=new Search(i+1, rand.nextInt(rows),rand.nextInt(columns),terrain);
+    	int[] rowPositions = new int[num_searches];
+		int[] colPositions = new int[num_searches];
+		int[] steps = new int[num_searches];
+		boolean[] stopped = new boolean[num_searches];
+		int[] finderID = new int[num_searches];
+    	for (int i=0;i<num_searches;i++){
+			rowPositions[i] = rand.nextInt(rows);
+			colPositions[i] = rand.nextInt(columns);
+			finderID[i] = i+1;
+		}
     	
       	if(DEBUG) {
     		/* Print initial values */
@@ -90,7 +93,7 @@ class MonteCarloMinimizationParallel{
     	//all searches
     	int local_min=Integer.MAX_VALUE;
     	int finder =-1;
-    	Integer[] results = search(searches);
+    	int[] results =  FJPool.invoke(new SearchParallel(terrain, rowPositions, colPositions, steps, stopped, 0, num_searches));
 		int min = results[0];
    		//end timer
    		tock();
