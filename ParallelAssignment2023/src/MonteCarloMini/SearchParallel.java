@@ -2,7 +2,6 @@ package MonteCarloMini;
 
 import java.util.concurrent.RecursiveTask;
 
-import MonteCarloMini.Search.Direction;
 
 public class SearchParallel extends RecursiveTask<int[]>{
 
@@ -23,7 +22,7 @@ public class SearchParallel extends RecursiveTask<int[]>{
 	    DOWN
 	  }
 
-    private static int SEQUENTIAL_CUTOFF = 100000;
+    private static int SEQUENTIAL_CUTOFF = 10000;
 
 //    public SearchParallel(Search[] searchArray, int low, int high){
 //         this.searchArray = searchArray;
