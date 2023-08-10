@@ -10,7 +10,8 @@ package MonteCarloMini;
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 
-import MonteCarloMini.SearchParallel.Direction;
+import MonteCarloMini.SearchParallel.SearchInner;
+import MonteCarloMini.TerrainArea.Direction;
 
 class MonteCarloMinimizationParallel{
 
@@ -20,6 +21,8 @@ class MonteCarloMinimizationParallel{
 	
 	static long startTime = 0;
 	static long endTime = 0;
+
+	
 
 	//timers - note milliseconds
 	private static void tick(){
@@ -86,7 +89,7 @@ class MonteCarloMinimizationParallel{
     	int local_min=Integer.MAX_VALUE;
     	//int finder =-1;
 		for (int i=0; i<num_searches; i++){
-			searches[i] =  new MonteCarloMinimizationParallel(). new SearchInner(i, rand.nextInt(rows), rand.nextInt(columns),terrain);
+			searches[i] =  new SearchParallel(). new SearchInner(i, rand.nextInt(rows), rand.nextInt(columns),terrain);
 		}
     	int[] results =  FJPool.invoke(new SearchParallel(searches, 0, num_searches));
 		int min = results[0];
@@ -121,76 +124,6 @@ class MonteCarloMinimizationParallel{
     	//terrain.print_visited();
     }
 
-	public class SearchInner{
-
-        private int id;				// Searcher identifier
-        private int pos_row, pos_col;	// Position in the grid
-        private int steps; //number of steps to end of search
-        private boolean stopped;			// Did the search hit a previous trail?
-        
-        private TerrainArea terrain;
-
-        public SearchInner(int id, int pos_row, int pos_col, TerrainArea terrain) {
-            this.id = id;
-            this.pos_row = pos_row; //randomly allocated
-            this.pos_col = pos_col; //randomly allocated
-            this.terrain = terrain;
-            this.stopped = false;
-        }
-        
-        public int find_valleys() {	
-            int height=Integer.MAX_VALUE;
-            Direction next = Direction.STAY_HERE;
-            while(terrain.visited(pos_row, pos_col)==0) { // stop when hit existing path
-                height=terrain.get_height(pos_row, pos_col);
-                //System.out.println("Height: " + height);
-                terrain.mark_visited(pos_row, pos_col, id); //mark current position as visited
-                steps++;
-                next = terrain.next_step(pos_row, pos_col);
-                switch(next) {
-                    case STAY_HERE: return height; //found local valley
-                    case LEFT: 
-                        //System.out.println("LEFT");
-                        pos_row--;
-                        break;
-                    case RIGHT:
-                        //System.out.println("RIGHT");
-                        pos_row=pos_row+1;
-                        break;
-                    case UP: 
-                        //System.out.println("UP");
-                        pos_col=pos_col-1;
-                        break;
-                    case DOWN: 
-                        //System.out.println("DOWN");
-                        pos_col=pos_col+1;
-                        break;
-                }
-            }
-            stopped=true;
-            //System.out.println("VALLEY (" + height + ")FOUND AT: " + pos_row + ", " + pos_col + "\n\n");
-            return height;
-        }
-
-        public int getID() {
-            return id;
-        }
-
-        public int getPos_row() {
-            return pos_row;
-        }
-
-        public int getPos_col() {
-            return pos_col;
-        }
-
-        public int getSteps() {
-            return steps;
-        }
-        public boolean isStopped() {
-            return stopped;
-        }
-
-    }
+	
 
 }

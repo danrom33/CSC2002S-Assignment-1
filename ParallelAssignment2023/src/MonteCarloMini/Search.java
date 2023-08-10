@@ -5,7 +5,7 @@ package MonteCarloMini;
  * then moves downhill, stopping at the local minimum.
  */
 
- import MonteCarloMini.SearchParallel.Direction;
+ import MonteCarloMini.TerrainArea.Direction;
 
 public class Search {
 	private int id;				// Searcher identifier
