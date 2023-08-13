@@ -1,8 +1,7 @@
 package MonteCarloMini;
-/* Serial  program to use Monte Carlo method to 
+/* Parallel  program to use Monte Carlo method to 
  * locate a minimum in a function
- * This is the reference sequential version (Do not modify this code)
- * Michelle Kuttel 2023, University of Cape Town
+ * Made use of Michelle Kuttel 2023, University of Cape Town's sequential program
  * Adapted from "Hill Climbing with Montecarlo"
  * EduHPC'22 Peachy Assignment" 
  * developed by Arturo Gonzalez Escribano  (Universidad de Valladolid 2021/2022)
@@ -11,7 +10,6 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.Random;
 
 import MonteCarloMini.TerrainArea.SearchInner;
-import MonteCarloMini.TerrainArea.Direction;
 
 class MonteCarloMinimizationParallel{
 
@@ -56,6 +54,7 @@ class MonteCarloMinimizationParallel{
     	ymax = Double.parseDouble(args[5]);
     	searches_density = Double.parseDouble(args[6]);
 
+		//Testing purposes
 		// rows = 15000;
     	// columns = 15000;
     	// xmin = -10;
@@ -77,6 +76,7 @@ class MonteCarloMinimizationParallel{
     	// Initialize 
     	terrain = new TerrainArea(rows, columns, xmin,xmax,ymin,ymax);
     	num_searches = (int)( rows * columns * searches_density );
+		//Create array of SearchInner objects, each starting at a random grid position
 		SearchInner[] searches = new SearchInner[num_searches];
 		for (int i=0; i< num_searches; i++){
 			searches[i] =  terrain.new SearchInner(i, rand.nextInt(rows), rand.nextInt(columns),terrain);
@@ -90,6 +90,8 @@ class MonteCarloMinimizationParallel{
     	
     	//start timer
     	tick();
+		//Calls compute() method to split SearchInner array up into smaller sections, each section run in parallel
+		//Output array will be [minHeight, position in array of search that found min height]
     	int[] results =  FJPool.invoke(new SearchParallel(searches, 0, num_searches, terrain));
    		//end timer
    		tock();

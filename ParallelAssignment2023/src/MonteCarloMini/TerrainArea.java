@@ -172,6 +172,7 @@ public class TerrainArea {
 		return ymin + ( (ymax - ymin) / columns ) * y;
 	}
 
+	//Inner class for searches
 	public class SearchInner{
 
         private int id;				// Searcher identifier

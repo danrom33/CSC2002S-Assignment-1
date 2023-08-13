@@ -6,20 +6,13 @@ import MonteCarloMini.TerrainArea.SearchInner;
 
 public class SearchParallel extends RecursiveTask<int[]>{
 
-   // private Search searchArray[];
     private TerrainArea terrain;
     private SearchInner[] searches;
     private int high;
     private int low;
-    private int minHeight = Integer.MAX_VALUE;
 
     private static int SEQUENTIAL_CUTOFF = 1000;
 
-//    public SearchParallel(Search[] searchArray, int low, int high){
-//         this.searchArray = searchArray;
-//         this.high = high;
-//         this.low = low;
-//    }
 
     public SearchParallel(SearchInner[] searches, int low, int high, TerrainArea terrain){
         this.searches = searches;
@@ -31,6 +24,7 @@ public class SearchParallel extends RecursiveTask<int[]>{
 
     protected int[] compute(){
         int[] results = new int[3];
+        //If section of array small enough, will run serahces in that section in serial
         if ((high - low) <= SEQUENTIAL_CUTOFF) {
             int local_min = Integer.MAX_VALUE;
             int finder = -1;
@@ -44,12 +38,14 @@ public class SearchParallel extends RecursiveTask<int[]>{
                     //System.out.println(i+ ": " + local_min + "\t" + xMin + "\t" + yMin + "\n");
                 }
             }
-    
+            //Once all searches in section run, store min height and position of search in array that found
+            //the min height and return it to  be compared to others.
             results[0] = local_min;
             results[1] = finder;
     
             return results;
         }
+        //If array section not small enough, going to be broken down more
         else{
             //System.out.print("High:" + high + "\tLow:" + low);
             SearchParallel left = new SearchParallel(searches, low, (high+low)/2, terrain);
@@ -58,6 +54,7 @@ public class SearchParallel extends RecursiveTask<int[]>{
             int[] rightHeight = right.compute();
             int[] leftHeight = left.join();
             int[] result;
+            //Finds minimum height found between left and right forks
             if(rightHeight[0] < leftHeight[0])
                 result = rightHeight;
             else
