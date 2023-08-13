@@ -7,10 +7,10 @@ package MonteCarloMini;
  * EduHPC'22 Peachy Assignment" 
  * developed by Arturo Gonzalez Escribano  (Universidad de Valladolid 2021/2022)
  */
-import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
+import java.util.Random;
 
-import MonteCarloMini.SearchParallel.SearchInner;
+import MonteCarloMini.TerrainArea.SearchInner;
 import MonteCarloMini.TerrainArea.Direction;
 
 class MonteCarloMinimizationParallel{
@@ -34,13 +34,14 @@ class MonteCarloMinimizationParallel{
 
     public static void main(String[] args)  {
 
+		Random rand = new Random();
+
     	int rows, columns; //grid size
     	double xmin, xmax, ymin, ymax; //x and y terrain limits
     	TerrainArea terrain;  //object to store the heights and grid points visited by searches
     	double searches_density;	// Density - number of Monte Carlo  searches per grid position - usually less than 1!
 
      	int num_searches;	// Array of searches
-    	Random rand = new Random();  //the random number generator
     	
     	if (args.length!=7) {  
     		System.out.println("Incorrect number of command line arguments provided.");   	
@@ -55,6 +56,15 @@ class MonteCarloMinimizationParallel{
     	ymax = Double.parseDouble(args[5]);
     	searches_density = Double.parseDouble(args[6]);
 
+		// rows = 15000;
+    	// columns = 15000;
+    	// xmin = -10;
+    	// xmax = 10;
+    	// ymin = -10;
+    	// ymax = 10;
+    	// searches_density = 0.25;
+
+
   
     	if(DEBUG) {
     		/* Print arguments */
@@ -67,7 +77,10 @@ class MonteCarloMinimizationParallel{
     	// Initialize 
     	terrain = new TerrainArea(rows, columns, xmin,xmax,ymin,ymax);
     	num_searches = (int)( rows * columns * searches_density );
-    	SearchInner[] searches = new SearchInner[num_searches];
+		SearchInner[] searches = new SearchInner[num_searches];
+		for (int i=0; i< num_searches; i++){
+			searches[i] =  terrain.new SearchInner(i, rand.nextInt(rows), rand.nextInt(columns),terrain);
+		}
     	
       	if(DEBUG) {
     		/* Print initial values */
@@ -77,15 +90,7 @@ class MonteCarloMinimizationParallel{
     	
     	//start timer
     	tick();
-    	
-    	//all searches
-    	int local_min=Integer.MAX_VALUE;
-    	//int finder =-1;
-		for (int i=0; i<num_searches; i++){
-			searches[i] =  new SearchParallel(). new SearchInner(i, rand.nextInt(rows), rand.nextInt(columns),terrain);
-		}
-    	int[] results =  FJPool.invoke(new SearchParallel(searches, 0, num_searches));
-		int min = results[0];
+    	int[] results =  FJPool.invoke(new SearchParallel(searches, 0, num_searches, terrain));
    		//end timer
    		tock();
    		
@@ -96,7 +101,7 @@ class MonteCarloMinimizationParallel{
     	}
 
 		
-    	
+    	System.out.println("PARALLEL");
 		System.out.printf("Run parameters\n");
 		System.out.printf("\t Rows: %d, Columns: %d\n", rows, columns);
 		System.out.printf("\t x: [%f, %f], y: [%f, %f]\n", xmin, xmax, ymin, ymax );
@@ -110,13 +115,12 @@ class MonteCarloMinimizationParallel{
 		System.out.printf("Grid points evaluated: %d  (%2.0f%s)\n",tmp,(tmp/(rows*columns*1.0))*100.0, "%");
 	
 		/* Results*/
-		int i = results[1];
-		int pos_row = searches[i].getPos_row();
-		int pos_col = searches[i].getPos_col();
+		int min =  results[0];
+		int finder = results[1];
+		int pos_row = searches[finder].getPos_row();
+		int pos_col = searches[finder].getPos_col();
 		System.out.printf("Global minimum: %d at x=%.1f y=%.1f\n\n", min, terrain.getXcoord(pos_row), terrain.getYcoord(pos_col) );
     	//terrain.print_visited();
     }
-
-	
 
 }

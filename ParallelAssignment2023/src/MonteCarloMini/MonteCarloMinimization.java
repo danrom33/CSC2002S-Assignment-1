@@ -9,6 +9,8 @@ package MonteCarloMini;
  */
 import java.util.Random;
 
+import MonteCarloMini.TerrainArea.Direction;
+
 class MonteCarloMinimization{
 	static final boolean DEBUG=false;
 	
@@ -47,8 +49,8 @@ class MonteCarloMinimization{
     	// ymax = Double.parseDouble(args[5]);
     	// searches_density = Double.parseDouble(args[6]);
 
-        rows = 10000;
-    	columns = 10000;
+        rows = 15000;
+    	columns = 15000;
     	xmin = -10;
     	xmax = 10;
     	ymin = -10;
@@ -117,6 +119,7 @@ class MonteCarloMinimization{
 		/* Results*/
 		System.out.printf("Global minimum: %d at x=%.1f y=%.1f\n\n", min, terrain.getXcoord(searches[finder].getPos_row()), terrain.getYcoord(searches[finder].getPos_col()) );
 				
-    	
     }
+
+
 }
